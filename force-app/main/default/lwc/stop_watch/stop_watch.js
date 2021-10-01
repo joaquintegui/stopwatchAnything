@@ -2,18 +2,47 @@
  * Created by joaquin on 30/09/2021.
  */
 
-import { LightningElement, track,api } from 'lwc';
+import {LightningElement, track, api, wire} from 'lwc';
+import {getRecord} from "lightning/uiRecordApi";
 
 export default class StopWatch extends LightningElement {
+
+    @api recordId;
+    @api objectApiName;
     @track running = false;
     @track timeVal = '0:0:0:0';
     @api StartField;
     @api EndField;
+    @track fields;
+    @track StartValue;
+    @track EndValue;
+
 
     timeIntervalInstance;
     totalMilliseconds = 0;
 
-    //agregar connected callback para conseguir los campos y empezar o mostrar el tiempo
+    @wire(getRecord, { recordId: '$recordId' , fields: '$fields'})
+    loadCustomer({ error, data }) {
+        if (error) {
+            console.log('error:',
+                error.body.errorCode,
+                error.body.message
+            );
+        } else if (data) {
+            console.log(JSON.stringify(data.fields[this.StartField]));
+            let startValue = new Date(data.fields[this.StartField]['value']);
+            //Esto da los segundos
+            console.log(Date.now()-startValue);
+            // this.StartValue = data.fields.Name.value;
+            // this.EndValue = data.fields.Customer_Id__c.value;
+        }
+        ;
+    }
+
+    connectedCallback() {
+        this.fields = [this.objectApiName+'.'+this.StartField,this.objectApiName+'.'+this.EndField];
+
+    }
 
     startStopClick(event) {
         if(this.running){
@@ -47,7 +76,7 @@ export default class StopWatch extends LightningElement {
 
     reset(event) {
         this.running = false;
-        this.timeVal = '0:0:0:0';
+        this.timeVal = '0:0:0';
         this.totalMilliseconds = 0;
         clearInterval(this.timeIntervalInstance);
     }
