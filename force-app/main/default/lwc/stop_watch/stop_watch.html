@@ -8,6 +8,8 @@
         <div style="font-size: 20px;text-align:center;">{timeVal}</div>
 
         <lightning-button label={startStopButtonLabel} onclick={startStopClick} style="margin-left: 145px;" disabled={StopStartDisabled}></lightning-button>
-        <lightning-button label="Reset" onclick={reset} style="margin-left: 10px;"></lightning-button>
+        <template if:true={campoReset}>
+            <lightning-button label="campoReset" onclick={reset} style="margin-left: 10px;"></lightning-button>
+        </template>
     </div>
 </template>

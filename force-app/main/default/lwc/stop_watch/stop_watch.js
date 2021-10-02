@@ -13,10 +13,11 @@ export default class StopWatch extends LightningElement {
 
     @api recordId;
     @api objectApiName;
-    @track running = false;
-    @track timeVal = '0:0:0';
     @api StartField;
     @api EndField;
+    @api campoReset;
+    @track running = false;
+    @track timeVal = '0:0:0';
     @track fields;
     @track StopStartDisabled = false;
     fieldsupdate = {};
@@ -38,6 +39,8 @@ export default class StopWatch extends LightningElement {
             let startValue = data.fields[this.StartField]['value'] == null ? null : new Date(data.fields[this.StartField]['value']);
             let endValue = data.fields[this.EndField]['value'] == null ? null : new Date(data.fields[this.EndField]['value']);
             let now = new Date();
+            console.log(startValue);
+            console.log(endValue);
             if(startValue != null && endValue == null){
                 this.totalMilliseconds = now-startValue;
                 this.startStop();
@@ -46,6 +49,7 @@ export default class StopWatch extends LightningElement {
                 this.StopStartDisabled = true;
             }else if(endValue != null && startValue == null){
                 this.timeVal = 'Error: No Start';
+                return;
             }
             this.timeVal = this.MilisecondsToHms(this.totalMilliseconds);
         }
