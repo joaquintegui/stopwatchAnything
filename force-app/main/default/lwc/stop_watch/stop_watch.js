@@ -15,10 +15,11 @@ export default class StopWatch extends LightningElement {
     @api objectApiName;
     @api StartField;
     @api EndField;
+    @api DurationField;
     @api campoReset;
     @track running = false;
     @track timeVal = '00:00:00';
-    @track fields;
+    @track fields = [];
     @track errorMessage;
     @track StopStartDisabled = false;
     fieldsupdate = {};
@@ -36,13 +37,17 @@ export default class StopWatch extends LightningElement {
                 error.body.message
             );
         } else if (data) {
+            if(this.errorMessage)return;
             this.record = data;
             let startValue = data.fields[this.StartField]['value'] == null ? null : new Date(data.fields[this.StartField]['value']);
             let endValue = data.fields[this.EndField]['value'] == null ? null : new Date(data.fields[this.EndField]['value']);
+            let durationValue = data.fields[this.DurationField]['value'] ;
             let now = new Date();
             console.log(startValue);
             console.log(endValue);
-            if(startValue != null && endValue == null){
+            if(durationValue != null){
+                this.totalMilliseconds = this.HourstoMiliseconds(durationValue);
+            }else if(startValue != null && endValue == null){
                 this.totalMilliseconds = now-startValue;
                 this.startStop();
             }else if(endValue != null && startValue != null){
@@ -62,13 +67,26 @@ export default class StopWatch extends LightningElement {
         }
 
     connectedCallback() {
-        this.fields = [this.objectApiName+'.'+this.StartField,this.objectApiName+'.'+this.EndField];
+        if(this.StartField != null){
+            this.fields = [...this.fields, this.objectApiName+'.'+this.StartField];
+        }
+        if(this.EndField != null){
+            this.fields = [...this.fields, this.objectApiName+'.'+this.EndField];
+        }
+        if(this.DurationField != null){
+            this.fields = [...this.fields, this.objectApiName+'.'+this.DurationField];
+        }
+
     }
 
     startStopClick() {
         if(this.running) {
             this.fieldsupdate[this.EndField] = 'now';
             this.StopStartDisabled = true;
+            if(this.DurationField != null){
+                console.log(this.MilisecondstoHours(this.totalMilliseconds));
+                this.fieldsupdate[this.DurationField] = this.MilisecondstoHours(this.totalMilliseconds);
+            }
         }else{
             this.fieldsupdate[this.StartField] = 'now';
         }
@@ -121,6 +139,14 @@ export default class StopWatch extends LightningElement {
         seconds = (seconds < 10) ? "0" + seconds : seconds;
 
         return hours + ":" + minutes + ":" + seconds;
+    }
+
+    MilisecondstoHours(duration){
+        return duration / (1000 * 60 * 60);
+    }
+
+    HourstoMiliseconds(hours){
+        return hours * (1000 * 60 * 60);
     }
 
     update(){
