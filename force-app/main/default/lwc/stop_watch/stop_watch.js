@@ -4,18 +4,21 @@
 
 import {LightningElement, track, api, wire} from 'lwc';
 import {getRecord} from "lightning/uiRecordApi";
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import UpdateRecord from '@salesforce/apex/StopWatchController.UpdateRecord';
+
+
 
 export default class StopWatch extends LightningElement {
 
     @api recordId;
     @api objectApiName;
     @track running = false;
-    @track timeVal = '0:0:0:0';
+    @track timeVal = '0:0:0';
     @api StartField;
     @api EndField;
     @track fields;
-    @track StartValue;
-    @track EndValue;
+    fieldsupdate = {};
 
 
     timeIntervalInstance;
@@ -29,39 +32,44 @@ export default class StopWatch extends LightningElement {
                 error.body.message
             );
         } else if (data) {
-            console.log(JSON.stringify(data.fields[this.StartField]));
+            this.record = data;
             let startValue = new Date(data.fields[this.StartField]['value']);
-            //Esto da los segundos
-            console.log(Date.now()-startValue);
+            let endValue = new Date(data.fields[this.EndField]['value']);
+            let now = new Date();
+            if(startValue != null && endValue == null){
+                this.totalMilliseconds = now-startValue;
+                this.startStopClick();
+                return;
+            }else if(endValue != null && startValue != null){
+                this.timeVal = this.MilisecondsToHms(startValue-endValue);
+            }else if(endValue != null && startValue == null){
+                this.timeVal = 'Error: No Start';
+            }
+            this.timeVal = this.MilisecondsToHms(this.totalMilliseconds);
+        }
             // this.StartValue = data.fields.Name.value;
             // this.EndValue = data.fields.Customer_Id__c.value;
         }
-        ;
-    }
 
     connectedCallback() {
         this.fields = [this.objectApiName+'.'+this.StartField,this.objectApiName+'.'+this.EndField];
-
     }
 
-    startStopClick(event) {
+    startStopClick() {
         if(this.running){
             this.running = false;
             clearInterval(this.timeIntervalInstance);
         }else{
+            //Si es un start guardamos el start en el campo
+            this.fieldsupdate[this.StartField] = 'now';
+            this.update();
             this.running = true;
             var parentThis = this;
-
             // Run timer code in every 100 milliseconds
             this.timeIntervalInstance = setInterval(function() {
 
-                // Time calculations for hours, minutes, seconds and milliseconds
-                var hours = Math.floor((parentThis.totalMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = Math.floor((parentThis.totalMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = Math.floor((parentThis.totalMilliseconds % (1000 * 60)) / 1000);
-
                 // Output the result in the timeVal variable
-                parentThis.timeVal = hours + ":" + minutes + ":" + seconds;
+                parentThis.timeVal = parentThis.MilisecondsToHms(parentThis.totalMilliseconds);
 
                 parentThis.totalMilliseconds += 100;
             }, 100);
@@ -79,5 +87,46 @@ export default class StopWatch extends LightningElement {
         this.timeVal = '0:0:0';
         this.totalMilliseconds = 0;
         clearInterval(this.timeIntervalInstance);
+    }
+
+    MilisecondsToHms(duration) {
+        var milliseconds = Math.floor((duration % 1000) / 100),
+            seconds = Math.floor((duration / 1000) % 60),
+            minutes = Math.floor((duration / (1000 * 60)) % 60),
+            hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+        hours = (hours < 10) ? "0" + hours : hours;
+        minutes = (minutes < 10) ? "0" + minutes : minutes;
+        seconds = (seconds < 10) ? "0" + seconds : seconds;
+
+        return hours + ":" + minutes + ":" + seconds;
+    }
+
+    update(){
+        this.fieldsupdate['Id'] = this.recordId;
+        console.log(this.fieldsupdate);
+
+        UpdateRecord(({ record: this.fieldsupdate, ObjectApiName: this.objectApiName }))
+            .then(() => {
+                console.log('exito');
+                const event = new ShowToastEvent({
+                    title: 'Exito',
+                    message: 'La fecha de incio se ha guradado',
+                    variant: 'success'
+                });
+                this.dispatchEvent(event);
+                // Display fresh data in the form
+                // return refreshApex(this.loadCustomer);
+            })
+            .catch(error => {
+                console.log(JSON.stringify(error));
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error creating record',
+                        message: error.body.message,
+                        variant: 'error'
+                    })
+                );
+            });
     }
 }
