@@ -22,7 +22,7 @@ global with sharing class StopWatchPicklists extends VisualEditor.DynamicPickLis
         Map<String, Schema.SObjectField> fieldMap = targetType.getDescribe().fields.getMap();
         VisualEditor.DynamicPickListRows  myValues = new VisualEditor.DynamicPickListRows();
         for (Schema.SObjectField field : fieldMap.values()) {
-            if(String.valueOf(field.getDescribe().getType()) =='DATETIME'){
+            if(String.valueOf(field.getDescribe().getType()) =='DATETIME' && field.getDescribe().isUpdateable()){
                 VisualEditor.DataRow value1 = new VisualEditor.DataRow(field.getDescribe().getLabel(), field.getDescribe().getName());
                 myValues.addRow(value1);
 

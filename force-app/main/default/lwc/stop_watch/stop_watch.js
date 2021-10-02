@@ -17,7 +17,7 @@ export default class StopWatch extends LightningElement {
     @api EndField;
     @api campoReset;
     @track running = false;
-    @track timeVal = '0:0:0';
+    @track timeVal = '00:00:00';
     @track fields;
     @track errorMessage;
     @track StopStartDisabled = false;
