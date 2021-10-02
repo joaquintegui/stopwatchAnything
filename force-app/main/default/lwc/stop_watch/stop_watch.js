@@ -19,6 +19,7 @@ export default class StopWatch extends LightningElement {
     @track running = false;
     @track timeVal = '0:0:0';
     @track fields;
+    @track errorMessage;
     @track StopStartDisabled = false;
     fieldsupdate = {};
 
@@ -48,7 +49,10 @@ export default class StopWatch extends LightningElement {
                 this.totalMilliseconds = endValue-startValue;
                 this.StopStartDisabled = true;
             }else if(endValue != null && startValue == null){
-                this.timeVal = 'Error: No Start';
+                this.errorMessage = 'Error: la fecha de inicio no esta seteada pero si la de fin';
+                return;
+            }else if(endValue < startValue){
+                this.errorMessage = 'Error: la fecha de fin no puede ser menor que la de inicio';
                 return;
             }
             this.timeVal = this.MilisecondsToHms(this.totalMilliseconds);

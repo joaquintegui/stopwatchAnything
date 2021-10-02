@@ -4,12 +4,23 @@
 
 <!-- Stop Watch -->
 <template>
-    <div style="background: white;padding: 20px;border-radius: 6px;">
-        <div style="font-size: 20px;text-align:center;">{timeVal}</div>
-
-        <lightning-button label={startStopButtonLabel} onclick={startStopClick} style="margin-left: 145px;" disabled={StopStartDisabled}></lightning-button>
-        <template if:true={campoReset}>
-            <lightning-button label="campoReset" onclick={reset} style="margin-left: 10px;"></lightning-button>
-        </template>
+    <template if:true={errorMessage}>
+        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+            <h2>
+                <lightning-icon icon-name=utility:error size="small"></lightning-icon>
+                {errorMessage}
+        </h2>
     </div>
+
+    </template>
+    <template if:false={errorMessage}>
+        <div style="background: white;padding: 20px;border-radius: 6px;">
+            <div style="font-size: 20px;text-align:center;">{timeVal}</div>
+            <lightning-button label={startStopButtonLabel} onclick={startStopClick} style="margin-left: 145px;" disabled={StopStartDisabled}></lightning-button>
+            <template if:true={campoReset}>
+                <lightning-button label="campoReset" onclick={reset} style="margin-left: 10px;"></lightning-button>
+            </template>
+        </div>
+    </template>
+
 </template>
