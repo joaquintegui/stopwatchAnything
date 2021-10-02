@@ -18,7 +18,9 @@ export default class StopWatch extends LightningElement {
     @api StartField;
     @api EndField;
     @track fields;
+    @track StopStartDisabled = false;
     fieldsupdate = {};
+
 
 
     timeIntervalInstance;
@@ -41,6 +43,7 @@ export default class StopWatch extends LightningElement {
                 this.startStop();
             }else if(endValue != null && startValue != null){
                 this.totalMilliseconds = endValue-startValue;
+                this.StopStartDisabled = true;
             }else if(endValue != null && startValue == null){
                 this.timeVal = 'Error: No Start';
             }
@@ -57,6 +60,7 @@ export default class StopWatch extends LightningElement {
     startStopClick() {
         if(this.running) {
             this.fieldsupdate[this.EndField] = 'now';
+            this.StopStartDisabled = true;
         }else{
             this.fieldsupdate[this.StartField] = 'now';
         }
@@ -89,6 +93,9 @@ export default class StopWatch extends LightningElement {
 
 
     reset(event) {
+        this.fieldsupdate[this.StartField] = null;
+        this.fieldsupdate[this.EndField] = null;
+        this.update();
         this.running = false;
         this.timeVal = '0:0:0';
         this.totalMilliseconds = 0;
@@ -121,8 +128,6 @@ export default class StopWatch extends LightningElement {
                     variant: 'success'
                 });
                 this.dispatchEvent(event);
-                // Display fresh data in the form
-                 return refreshApex(this.loadCustomer);
             })
             .catch(error => {
                 console.log(JSON.stringify(error));
