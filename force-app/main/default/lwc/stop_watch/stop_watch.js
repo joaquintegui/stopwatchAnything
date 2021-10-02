@@ -33,13 +33,12 @@ export default class StopWatch extends LightningElement {
             );
         } else if (data) {
             this.record = data;
-            let startValue = new Date(data.fields[this.StartField]['value']);
-            let endValue = new Date(data.fields[this.EndField]['value']);
+            let startValue = data.fields[this.StartField]['value'] == null ? null : new Date(data.fields[this.StartField]['value']);
+            let endValue = data.fields[this.EndField]['value'] == null ? null : new Date(data.fields[this.EndField]['value']);
             let now = new Date();
             if(startValue != null && endValue == null){
                 this.totalMilliseconds = now-startValue;
-                this.startStopClick();
-                return;
+                this.startStop();
             }else if(endValue != null && startValue != null){
                 this.timeVal = this.MilisecondsToHms(startValue-endValue);
             }else if(endValue != null && startValue == null){
@@ -56,13 +55,21 @@ export default class StopWatch extends LightningElement {
     }
 
     startStopClick() {
-        if(this.running){
-            this.running = false;
-            clearInterval(this.timeIntervalInstance);
+        if(this.running) {
+
         }else{
             //Si es un start guardamos el start en el campo
             this.fieldsupdate[this.StartField] = 'now';
             this.update();
+        }
+        this.startStop();
+        }
+
+    startStop() {
+        if(this.running){
+            this.running = false;
+            clearInterval(this.timeIntervalInstance);
+        }else{
             this.running = true;
             var parentThis = this;
             // Run timer code in every 100 milliseconds
