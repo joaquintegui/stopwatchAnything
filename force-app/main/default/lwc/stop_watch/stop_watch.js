@@ -40,7 +40,7 @@ export default class StopWatch extends LightningElement {
                 this.totalMilliseconds = now-startValue;
                 this.startStop();
             }else if(endValue != null && startValue != null){
-                this.timeVal = this.MilisecondsToHms(startValue-endValue);
+                this.totalMilliseconds = endValue-startValue;
             }else if(endValue != null && startValue == null){
                 this.timeVal = 'Error: No Start';
             }
@@ -56,12 +56,11 @@ export default class StopWatch extends LightningElement {
 
     startStopClick() {
         if(this.running) {
-
+            this.fieldsupdate[this.EndField] = 'now';
         }else{
-            //Si es un start guardamos el start en el campo
             this.fieldsupdate[this.StartField] = 'now';
-            this.update();
         }
+        this.update();
         this.startStop();
         }
 
@@ -118,12 +117,12 @@ export default class StopWatch extends LightningElement {
                 console.log('exito');
                 const event = new ShowToastEvent({
                     title: 'Exito',
-                    message: 'La fecha de incio se ha guradado',
+                    message: 'La fecha se ha guradado',
                     variant: 'success'
                 });
                 this.dispatchEvent(event);
                 // Display fresh data in the form
-                // return refreshApex(this.loadCustomer);
+                 return refreshApex(this.loadCustomer);
             })
             .catch(error => {
                 console.log(JSON.stringify(error));
