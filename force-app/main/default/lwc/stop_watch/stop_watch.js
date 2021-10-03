@@ -6,6 +6,7 @@ import {LightningElement, track, api, wire} from 'lwc';
 import {getRecord} from "lightning/uiRecordApi";
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import UpdateRecord from '@salesforce/apex/StopWatchController.UpdateRecord';
+import { refreshApex } from '@salesforce/apex';
 
 
 
@@ -16,13 +17,15 @@ export default class StopWatch extends LightningElement {
     @api StartField;
     @api EndField;
     @api DurationField;
-    @api campoReset;
+    @api ResetField;
+    @api NetTimeMode;
     @track running = false;
     @track timeVal = '00:00:00';
     @track fields = [];
     @track errorMessage;
     @track StopStartDisabled = false;
     fieldsupdate = {};
+    returnedData;
 
 
 
@@ -30,22 +33,28 @@ export default class StopWatch extends LightningElement {
     totalMilliseconds = 0;
 
     @wire(getRecord, { recordId: '$recordId' , fields: '$fields'})
-    loadCustomer({ error, data }) {
-        if (error) {
+    loadCustomer(result) {
+        this.returnedData = result;
+
+        if (result.error) {
             console.log('error:',
-                error.body.errorCode,
-                error.body.message
+                result.error.body.errorCode,
+                result.error.body.message
             );
-        } else if (data) {
+            this.errorMessage =  result.error.body.message;
+        } else if (result.data) {
             if(this.errorMessage)return;
-            this.record = data;
-            let startValue = data.fields[this.StartField]['value'] == null ? null : new Date(data.fields[this.StartField]['value']);
-            let endValue = data.fields[this.EndField]['value'] == null ? null : new Date(data.fields[this.EndField]['value']);
-            let durationValue = data.fields[this.DurationField]['value'] ;
+            this.record = result.data;
+            let returnedFields = result.data.fields;
+            let startValue;
+            let endValue;
+            let durationValue;
             let now = new Date();
-            console.log(startValue);
-            console.log(endValue);
-            if(durationValue != null){
+            if(this.StartField)startValue = returnedFields[this.StartField]['value'] == null ? null : new Date(returnedFields[this.StartField]['value']);
+            if(this.EndField)endValue = returnedFields[this.EndField]['value'] == null ? null : new Date(returnedFields[this.EndField]['value']);
+            if(this.DurationField)durationValue = returnedFields[this.DurationField]['value'] ;
+
+            if(durationValue != null && this.NetTimeMode){
                 this.totalMilliseconds = this.HourstoMiliseconds(durationValue);
             }else if(startValue != null && endValue == null){
                 this.totalMilliseconds = now-startValue;
@@ -62,18 +71,18 @@ export default class StopWatch extends LightningElement {
             }
             this.timeVal = this.MilisecondsToHms(this.totalMilliseconds);
         }
-            // this.StartValue = data.fields.Name.value;
+            // this.StartValue = returnedFields.Name.value;
             // this.EndValue = data.fields.Customer_Id__c.value;
         }
 
     connectedCallback() {
-        if(this.StartField != null){
+        if(this.StartField){
             this.fields = [...this.fields, this.objectApiName+'.'+this.StartField];
         }
-        if(this.EndField != null){
+        if(this.EndField){
             this.fields = [...this.fields, this.objectApiName+'.'+this.EndField];
         }
-        if(this.DurationField != null){
+        if(this.DurationField){
             this.fields = [...this.fields, this.objectApiName+'.'+this.DurationField];
         }
 
@@ -92,7 +101,8 @@ export default class StopWatch extends LightningElement {
         }
         this.update();
         this.startStop();
-        }
+        refreshApex(this.returnedData);
+    }
 
     startStop() {
         if(this.running){
@@ -121,11 +131,14 @@ export default class StopWatch extends LightningElement {
     reset(event) {
         this.fieldsupdate[this.StartField] = null;
         this.fieldsupdate[this.EndField] = null;
-        this.update();
+        this.fieldsupdate[this.DurationField] = null;
+        this.update()
         this.running = false;
-        this.timeVal = '0:0:0';
+        this.timeVal = 'reset';
         this.totalMilliseconds = 0;
         clearInterval(this.timeIntervalInstance);
+        refreshApex(this.returnedData);
+
     }
 
     MilisecondsToHms(duration) {
@@ -148,6 +161,7 @@ export default class StopWatch extends LightningElement {
     HourstoMiliseconds(hours){
         return hours * (1000 * 60 * 60);
     }
+
 
     update(){
         this.fieldsupdate['Id'] = this.recordId;
