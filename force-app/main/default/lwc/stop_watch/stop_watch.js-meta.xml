@@ -14,8 +14,8 @@
     <property label="Campo de duración" name="DurationField" type="String" datasource="apex://integerPicklist"/>
     <property label="Mostrar campo Reset" name="ResetField" type="Boolean"/>
     <property label="Modo Tiempo Neto" name="NetTimeMode" type="Boolean"
-              description="al seleccionar este campo se prioriza el campo de duración por
-               sobre los de inicio y fin, el reloj siempre empezara el tiempo que marque ese campo"/>
+              description="Al seleccionar este campo se utiliza unicamente el campo de duración por
+               sobre los de inicio y fin, el reloj siempre empezara el tiempo que marque ese campo."/>
     </targetConfig>
     </targetConfigs>
 
