@@ -9,10 +9,17 @@
     </targets>
     <targetConfigs>
     <targetConfig targets="lightning__RecordPage">
-    <property label="Campo de comienzo" name="StartField" type="String" datasource="apex://DateTimePicklist"/>
-    <property label="Campo de finalización" name="EndField" type="String" datasource="apex://DateTimePicklist"/>
-    <property label="Campo de duración" name="DurationField" type="String" datasource="apex://integerPicklist"/>
-    <property label="Mostrar campo Reset" name="ResetField" type="Boolean"/>
+    <property label="Campo de comienzo" name="StartField" type="String" datasource="apex://DateTimePicklist"
+                description="Opcional: Este campo guarda o bien la fecha en la que se hizo click en Empezar o
+               calcula el tiempo transcurrido si el campo se ha actualizado de otro modo"/>
+    <property label="Campo de finalización" name="EndField" type="String" datasource="apex://DateTimePicklist"
+                description="Opcional: Este campo guarda o bien la fecha en la que se hizo click en Parar o calcula
+                la duración con el campo si se ha actualizado de otro modo"/>
+    <property label="Campo de duración" name="DurationField" type="String" datasource="apex://integerPicklist"
+                description="Opcional: El campo de duración guarda el tiempo transcurrido en horas decimal. (Media hora se guarda 0.5)"/>
+    <property label="Mostrar campo Reset" name="ResetField" type="Boolean"
+                description="Si selecciona esta campo un boton de reseteo aparecerá para poder blanquear los campos y volver el contador a 0.
+                En caso de que uno de los campos no sea editable solo editará aquellos que se puedan."/>
     <property label="Modo Tiempo Neto" name="NetTimeMode" type="Boolean"
               description="Al seleccionar este campo se utiliza unicamente el campo de duración por
                sobre los de inicio y fin, el reloj siempre empezara el tiempo que marque ese campo."/>
