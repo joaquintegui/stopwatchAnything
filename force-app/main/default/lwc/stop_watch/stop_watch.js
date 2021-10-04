@@ -81,6 +81,8 @@ export default class StopWatch extends LightningElement {
         }
         if(this.EndField){
             this.fields = [...this.fields, this.objectApiName+'.'+this.EndField];
+            if(this.NetTimeMode)this.errorMessage = 'En el modo Tiempo Neto no se puede setear el end Date.';
+            if(!this.StartField)this.errorMessage = 'Si hay un campo de finalizacion debe haber uno de inicio';
         }
         if(this.DurationField){
             this.fields = [...this.fields, this.objectApiName+'.'+this.DurationField];
