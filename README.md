@@ -2,6 +2,13 @@
 
 Este componente permite insertar un cronometro en cualquier Record Page de Salesforce y guardar tanto el inicio como el fin y/o la duración en cualquier campo del objeto.
 
+## Instalación el componente
+Para instalar en produccíon/Developer hacer click en [este link](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008nuhC
+"Link")
+
+Para instalar en Sandbox hacer click en [este link](https://test.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008nuhC
+"Link")
+
 ## Configurar el componente
 
 Al configurar el componente en una pagina se nos piden 3 campos y hay dos casilleros a completar.
