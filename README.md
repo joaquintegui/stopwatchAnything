@@ -2,13 +2,6 @@
 
 Este componente permite insertar un cronometro en cualquier Record Page de Salesforce y guardar tanto el inicio como el fin y/o la duración en cualquier campo del objeto.
 
-## Como se instala?
-
-Para instalarlo se puede hacer click en el siguiente boton.
-<a href="https://githubsfdeploy.herokuapp.com?owner=joaquintegui&repo=stopwatchAnything&ref=main">
-![Deploy to Salesforce](https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png "Deploy to Salesforce")
-</a>
-
 ## Configurar el componente
 
 Al configurar el componente en una pagina se nos piden 3 campos y hay dos casilleros a completar.
