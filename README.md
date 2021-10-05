@@ -1,18 +1,22 @@
-# Salesforce DX Project: Next Steps
+# StopWatch Anything
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+Este componente permite insertar un cronometro en cualquier Record Page de Salesforce y guardar tanto el inicio como el fin y/o la duración en cualquier campo del objeto.
 
-## How Do You Plan to Deploy Your Changes?
+## Como se instala?
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+Para instalarlo se puede hacer click en el siguiente boton.
+<a href="https://githubsfdeploy.herokuapp.com?owner=joaquintegui&repo=stopwatchAnything&ref=main">
+![Deploy to Salesforce](https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png "Deploy to Salesforce")
+</a>
 
-## Configure Your Salesforce DX Project
+## Configurar el componente
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+Al configurar el componente en una pagina se nos piden 3 campos y hay dos casilleros a completar.
 
-## Read All About It
+* **Campo de comienzo:** En este campo se listan todos los campos de tipo DateTime del objeto. Este campo sera donde se guarde (si el campo es editable) el momento que se hace click en empezar y donde empezara el cronometro tanto si es haciendo click en empezar o si se actualiza de otro modo.
+* **Campo de Finzalización**: En este campo se listan todos los campos de tipo DateTime del objeto. Este campo sera donde se guarde (si el campo es editable) el momento que se hace click en Parar y donde calculara el final el cronometro tanto si es haciendo click en Parar o si se actualiza de otro modo.
+* **Campo de Duración**: En este campo se listan todos los campos de tipo Número del objeto. Este campo sera donde se guarde (si el campo es editable) La diferecia entre el inicio y el fin o bien el tiempo neto en que el cronometro funciono.
+* **Mostrar Campo Reset**: Si esta casilla esta chequeada se mostrara un boton para resetear el cronometro (y los campos editables) a 0.
+* **Modo tiempo Neto**: En este modo no se calcula la duración con los campos de incio y fin sino que se usa unicamente el campo duracieon que es editado cada vez que el cronometro se para.
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+
