@@ -1,6 +1,8 @@
 # StopWatch Anything
 
 Este componente permite insertar un cronometro en cualquier Record Page de Salesforce y guardar tanto el inicio como el fin y/o la duración en cualquier campo del objeto.
+![Imagen de muestra](https://github.com/joaquintegui/stopwatchAnything/blob/main/force-app/main/default/Examples/Screen%20Shot%202021-10-05%20at%2009.12.40.png)
+
 
 ## Instalación el componente
 Para instalar en produccíon/Developer hacer click en [este link](https://login.salesforce.com/packaging/installPackage.apexp?p0=04t6g000008nuhC
@@ -18,5 +20,7 @@ Al configurar el componente en una pagina se nos piden 3 campos y hay dos casill
 * **Campo de Duración**: En este campo se listan todos los campos de tipo Número del objeto. Este campo sera donde se guarde (si el campo es editable) La diferecia entre el inicio y el fin o bien el tiempo neto en que el cronometro funciono.
 * **Mostrar Campo Reset**: Si esta casilla esta chequeada se mostrara un boton para resetear el cronometro (y los campos editables) a 0.
 * **Modo tiempo Neto**: En este modo no se calcula la duración con los campos de incio y fin sino que se usa unicamente el campo duracieon que es editado cada vez que el cronometro se para.
+
+![Imagen de muestra](https://github.com/joaquintegui/stopwatchAnything/blob/main/force-app/main/default/Examples/Screen%20Shot%202021-10-05%20at%2009.13.08.png)
 
 
